@@ -13,9 +13,15 @@ export default function Register() {
                 if(res.status===201){
                     alert("User registered successfully")
                 }
+                 else if(res.status==401){
+                    alert(res.data.message)
+                }
             })
             .catch(err=>{
-                console.log(err)
+                console.log("from catch block",err)
+                if(err.status==401){
+                    alert(res.data.message)
+                }
             })
     }
     return (
