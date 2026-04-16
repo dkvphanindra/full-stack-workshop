@@ -1,28 +1,42 @@
-const express= require("express")
-const router=express.Router() 
-const bcrypt=require("bcrypt")
-const jwt= require("jsonwebtoken")
-const User= require("../models/User")
+const express = require("express");
+const router = express.Router();
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
-router.post("/register",async (req,res)=>{
-    try{
-        const {name,email,password,mobile}=req.body 
-        const existingUser= await User.findOne({email})
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password, mobile } = req.body;
 
-        if(existingUser){
-            return res.status(401).json({message:"User already exists"})
-        }
-        const hashedPassword= bcrypt.hash(password,10)
-        const user=await User.create({
-            name,email,password:hashedPassword,mobile
-        })
-        return res.status(201).json({message:"User created successfully"})
+    // check if all fields are present
+    if (!name || !email || !password || !mobile) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-    catch(err){
-        console.log("error from register",err)
-        return res.status(500).json({message:"Error in server"})
+
+    // check existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
-})
 
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-module.exports=router
+    // create user
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      mobile,
+    });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("error from register", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+module.exports = router;
