@@ -24,7 +24,7 @@ router.post("/add",protect,async (req,res)=>{
             
         }
         await cart.save()
-        return res.status(201).json({message:"Added to cart"})
+        return res.status(201).json({message:"Added to cart"}) 
     }
     catch(err){
         return res.status(500).json({message:`error from cart ${err}`})
@@ -33,7 +33,7 @@ router.post("/add",protect,async (req,res)=>{
 
 router.get("/",protect,async(req,res)=>{
     try{
-        const cart=await Cart.findOne({userId:req.user.id}).populate("items.productId")
+        const cart=await Cart.findOne({userId:req.user.id}).populate("item.productId")
         console.log(cart)
         return res.status(200).json(cart)
     }
