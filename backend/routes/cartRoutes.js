@@ -38,6 +38,4 @@ router.get("/",protect,async(req,res)=>{
         return res.status(500).json({message:`error from cart get route ${err}`})
     }
 })
-
-
 module.exports=router
